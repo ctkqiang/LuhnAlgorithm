@@ -22,11 +22,11 @@ check_luhn(CARD_NUMBER) ->
 for(0, _) ->
     []; 
     for (N, Term) when N >= 0 ->
-        io:fwrite("s"),
+        
         [Term|for(N-1, Term)].
 
 log(MSG) ->
-    io:fwrite("~p~n", [MSG]).
+    io:fwrite("The Length Of The Card Number: ~p~n", [MSG]).
 
 %% Run Init Anonymous Function 
 start(CARD) ->

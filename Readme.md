@@ -23,7 +23,7 @@ into array and get the sum of both.
 
 Now Override those values before 9 , to existing card number,
 
-```math
+```latex
 
 4 + 7 + 1 + 6 + 2 + 8 + 9 + 5 + 3 + 6 + 5 + 6 + 7 + 7 + 3 + 0 = 79
 
