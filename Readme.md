@@ -4,7 +4,7 @@ Luhn Algorithm is a **Modulus 10** and **Mod 10** , is a simple checksum formula
 
 <br />
 
-##### How is the Formulae  Work? 
+#### How is the Formulae  Work? 
 Let's supposed an example of a Debit / Credit Card number ```4716 2495 3356 7731```.
 First, seperate card number into seperation of array, then followed by double every 
 second digit in the array. 
