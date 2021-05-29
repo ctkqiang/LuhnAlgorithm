@@ -7,8 +7,8 @@
 -import(lists, [len/1, chr/2, str/2,  fac/1, persistent_term/2, droplast/1, foldr/3, last/1]).
 -export([check_luhn/1, for/2, start/1, log/1, valid/1, create/1]).
 
--export_type([digit/0,valid_char/0]).
-% -compile(export_all).
+-export_type([digit/0, valid_char/0]).
+-compile(export_all).
 
 %% Luhn Algorithm, the modulus 10 or mod 10 algorithm, 
 %% is a simple checksum formula used to validate a variety 
