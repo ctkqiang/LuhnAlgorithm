@@ -73,6 +73,7 @@ do_luhn([C|Cs], O, E) when $0 =< C, C =< $9 ->
 do_luhn([_|Cs], O, E) -> do_luhn(Cs, O, E);
 do_luhn([], O, E)     -> {O,E}.
 
+
 %% @doc Return the numeric value of a given {@link partity/0. parity} `P',
 %% i.e. `1' for `odd' and `2' for `even'.
 -spec parity(P::parity()) -> K::1 | 2.
@@ -91,7 +92,6 @@ check_digit(P, OE) -> rem10(element(parity(P), OE)).
 %% @doc Return `X rem 10'.
 -spec rem10(non_neg_integer()) -> digit().
 rem10(X) -> X rem 10.
-
 
 % for_loop(I, N, _) when I - 1 >= 0 -> 
 %     if persistent_term:get(IS_SECOND) = false ->
