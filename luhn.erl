@@ -1,4 +1,4 @@
-%% [作者] ： 郑子强 <johnmelodymel@qq.com>
+%% [作者] ： 钟智强 <johnmelodymel@qq.com>
 %% [项目] ： 鲁恩算法
 
 -module(luhn).
@@ -10,51 +10,55 @@
 -export_type([digit/0, valid_char/0]).
 -compile(export_all).
 
-%% 鲁恩算法，也称模10算法，是一种简单的校验和公式，用于验证各种身份证号码，如信用卡号，IMEI号码等。
+%% Luhn Algorithm, the modulus 10 or mod 10 algorithm, 
+%% is a simple checksum formula used to validate a variety 
+%% of identification numbers, such as credit card numbers, 
+%% IMEI numbers.
 
-%% 测试
-% -include_lib("include/proper.hrl").
-
-%% 类型
-%% @type digit(). 数字是一个单一的十进制数字。
+%% Types
+%% @type digit(). A digit is a single decimal digit.
 -type digit() :: 0..9.
 
-%% @type valid_char(). 有效字符是`"0123456789 "'中的一个。
+%% @type valid_char(). A valid char is one of `"0123456789 "'.
 -type valid_char() :: 48..57 | 32.
 
-%% @type parity(). 奇偶性是`even'或`odd'。
+%% @type parity(). Parity is either `even' or `odd'.
 -type parity() :: even | odd.
 
-%% 检查卡号
-check_luhn(卡号) ->
+%% Inspection Card Number
+check_luhn(CARD_NUMBER) ->
     Fn = fun() ->
-        io:fwrite("卡号: ~p~n", [卡号]),
-        Len = len(卡号),
+        io:fwrite("Card Number: ~p~n", [CARD_NUMBER]),
+        Len = len(CARD_NUMBER),
         % persistent_term:put(IS_SECOND, false),
         log(Len) end,
     Fn().
 
-%% @doc 给定一个`字符串'，如果它代表一个有效的号码，则返回`true'，根据鲁恩公式，否则返回`false'。
--spec valid(字符串::string()) -> Valid::boolean().
+%% @doc Given a `String', return `true' if it represents a valid number,
+%% per the Luhn formula, otherwise `false'.
+-spec valid(String::string()) -> Valid::boolean().
 valid(S) -> 0 =:= rem10(do_luhn(S, odd)).
 
-%% @doc 给定一个`字符串'，计算其校验位并将其附加到`字符串'。
--spec create(字符串::string()) -> Result::string().
+%% @doc Given a `String', calculate its check digit
+%% and return it appended to `String'.
+-spec create(String::string()) -> Result::string().
 create(S) -> S ++ [$0 + rem10(10 - do_luhn(S, even))].
 
+
 %%%===================================================================
-%%% 内部函数
+%%% Internal functions
 %%%===================================================================
 
-%% @doc 等价于{@link check_digit/1}`(P, '{@link do_luhn/3}`(S, 0, 0)'。
--spec do_luhn(字符串::string(), 奇偶性::parity()) -> CheckDigit::digit().
+%% @doc Equivalent to {@link check_digit/1}`(P, '{@link do_luhn/3}`(S, 0, 0)'.
+-spec do_luhn(String::string(), Parity::parity()) -> CheckDigit::digit().
 do_luhn(S, P) -> check_digit(P, do_luhn(S, 0, 0)).
 
-%% @doc 给定一个`字符串'，`OddAcc'和`EvenAcc'，返回两种`odd'和`even'奇偶性的校验位，作为元组。
+%% @doc Given a `String', `OddAcc' and `EvenAcc', return check digits
+%% for both `odd' and `even' parity, as a tuple.
 %% @see check_digit/1
 %% @see do_luhn/2
--spec do_luhn(字符串, 奇数累加, 偶数累加) -> {OddDigit,EvenDigit} when
-    字符串    :: string(),
+-spec do_luhn(String, OddAcc, EvenAcc) -> {OddDigit,EvenDigit} when
+    String    :: string(),
     OddAcc    :: non_neg_integer(),
     EvenAcc   :: non_neg_integer(),
     OddDigit  :: digit(),
@@ -66,20 +70,23 @@ do_luhn([C|Cs], O, E) when $0 =< C, C =< $9 ->
 do_luhn([_|Cs], O, E) -> do_luhn(Cs, O, E);
 do_luhn([], O, E)     -> {O,E}.
 
-%% @doc 返回给定{@link partity/0. parity} `P'的数值，即对于`奇数'为`1'，对于`偶数'为`2'。
--spec parity(P::parity()) -> K::1 | 2.
-parity(奇数)  -> 1;
-parity(偶数) -> 2.
 
-%% @doc 给定`奇偶性'和`{OddAcc,EvenAcc}=OddEvenTuple'，返回适当的`CheckDigit'。
+%% @doc Return the numeric value of a given {@link partity/0. parity} `P',
+%% i.e. `1' for `odd' and `2' for `even'.
+-spec parity(P::parity()) -> K::1 | 2.
+parity(odd)  -> 1;
+parity(even) -> 2.
+
+%% @doc Given a `Parity' and an `{OddAcc,EvenAcc}=OddEvenTuple',
+%% return the appropriate `CheckDigit'.
 %% @see do_luhn/3
--spec check_digit(奇偶性, 奇数偶数元组) -> CheckDigit when
-    奇偶性       :: parity(),
+-spec check_digit(Parity, OddEvenTuple) -> CheckDigit when
+    Parity       :: parity(),
     OddEvenTuple :: {non_neg_integer(),non_neg_integer()},
     CheckDigit   :: digit().
 check_digit(P, OE) -> rem10(element(parity(P), OE)).
 
-%% @doc 返回`X rem 10'。
+%% @doc Return `X rem 10'.
 -spec rem10(non_neg_integer()) -> digit().
 rem10(X) -> X rem 10.
 
@@ -93,17 +100,67 @@ for(0, _) ->
         
         [Term|for(N-1, Term)].
 
-log(消息) ->
-    io:fwrite("卡号长度: ~p~n", [消息]).
+log(MSG) ->
+    io:fwrite("The Length Of The Card Number: ~p~n", [MSG]).
 
-%% 运行初始化匿名函数
+%% Run Init Anonymous Function 
 start(CARD) ->
     Fn = fun() ->
-        io:fwrite("鲁恩算法 \n"),
+        io:fwrite("Luhn Algorithm \n"),
         check_luhn(CARD) end,
     Fn().
-%%% 类型
+%%% Types
 
-%% @doc 一个{@link digit(). digit}s列表的PropEr类型生成器，
-%% 使得`length(List) >= 3'和`hd(List) > 0'。
+%% @doc A PropEr type generator for a list of {@link digit(). digit}s,
+%% such that `length(List) >= 3' and `hd(List) > 0'.
 %% @see pos_digit/0
+-spec digits() -> proper_types:raw_type().
+digits() -> [pos_digit(),digit(),digit()|list(digit())].
+
+%% @doc A PropEr type generator for a digit `0..9'.
+%% @see digits/0
+%% @see pos_digit/0
+-spec digit() -> proper_types:type().
+digit() -> integer(0, 9).
+
+%% @doc A PropEr type generator for a digit `1..9'.
+%% @see digits/0
+%% @see digit/0
+-spec pos_digit() -> proper_types:type().
+pos_digit() -> integer(1, 9).
+
+%%% Helper functions
+
+%% @doc Given a list of {@link digits/0. digits} `L',
+%% if `length(L)' is odd, prepend `0', otherwise return `L'.
+-spec maybe_pad([digit(),...]) -> [digit(),...].
+maybe_pad(L) when 0 =:= length(L) rem 2 -> L;
+maybe_pad(L)                            -> [0|L].
+
+%% @doc Given a list of {@link digit/0. digits}, return its reversed string
+%% representation, e.g. `"4312" = to_string([2,1,3,4])'.
+-spec to_string([digit(),...]) -> [valid_char(),...].
+to_string(Ds) -> foldr(fun (D, Acc) -> [$0+D|Acc] end, "", Ds).
+
+%% @doc Return `true' iff {@link luhn:valid/1. luhn:valid/1}
+%% returns the correct result for `L'.
+%% @see prop_create/0
+-spec valid1([digit(),...]) -> boolean().
+valid1(L) -> (0 =:= rem10(sum(maybe_pad(L)))) =:= valid(to_string(L)).
+
+%% @doc Return the sum, per the Luhn formula, of `Digits'.
+-spec sum(Digits::[digit(),...]) -> non_neg_integer().
+sum(L) -> last(L) + do_sum(droplast(L), 0).
+
+%% @doc Implementation of {@link sum/1}.
+-spec do_sum([digit()], non_neg_integer()) -> non_neg_integer().
+do_sum([A,B|T], Acc) -> do_sum(T, Acc + norm(2*A) + B);
+do_sum([A],     Acc) -> Acc + norm(2*A);
+do_sum([],      Acc) -> Acc.
+
+
+%% @doc Given a non-negative integer `N', subtract nine if `N >= 10',
+%% otherwise return `N'.
+-spec norm(N::non_neg_integer()) -> N1 :: digit().
+norm(N) when N >= 10 -> N - 9;
+norm(N)              -> N.
