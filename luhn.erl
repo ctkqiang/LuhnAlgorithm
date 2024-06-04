@@ -1,4 +1,3 @@
-```erlang
 %% [作者] ： 郑子强 <johnmelodymel@qq.com>
 %% [项目] ： 鲁恩算法
 
